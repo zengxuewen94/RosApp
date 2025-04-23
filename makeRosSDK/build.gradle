@@ -1,0 +1,62 @@
+plugins {
+    id 'com.android.library'
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        minSdkVersion 23
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+//
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    //gradle -version
+    task makeJar( type: Jar) {
+        classifier = 'sources'
+        from android.sourceSets.main.java.srcDirs
+
+        //删除存在的
+        delete 'build/libs/androidRosBridge.jar'
+        archiveName 'androidRosBridge.jar'//目标jar包名称
+        //设置拷贝的文件
+        from(project.zipTree('build/intermediates/aar_main_jar/release/classes.jar'))//此行很重要，否则该项目编写的代码无法打进jar包，具体路径与gradle版本有关，//之前网上说的都是老版本的路径，害我浪费半天时间
+        from(project.zipTree("libs/Java-WebSocket-1.3.7.jar"))//第三方jar包
+        from(project.zipTree("libs/json-simple-1.1.1.jar"))//第三方jar包
+        include('com/**')
+        include('**/')
+        exclude ('包名/BuildConfig.class')//需排除一些无用文件
+        exclude ('包名/BuildConfig\$*.class')
+        //打进jar包后的文件目录
+        destinationDir=file('build/libs')
+    }
+    makeJar.dependsOn(build)
+}
+
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar']) //
+
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+
+
+}
