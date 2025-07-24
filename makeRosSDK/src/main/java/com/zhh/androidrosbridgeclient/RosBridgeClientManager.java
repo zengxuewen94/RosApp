@@ -648,7 +648,6 @@ public enum RosBridgeClientManager {
         //actionCancel();
         Topic topic = new Topic<>("/move_base_simple/goal", PoseStamped.class, client);
         topic.publish(poseStamped);
-        this.onNavigateListener = onNavigateListener;
     }
 
     /**

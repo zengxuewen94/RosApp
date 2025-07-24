@@ -1,6 +1,11 @@
 package com.zhh.rosApp.viewmodel;
 
 import android.app.Application;
+import android.content.Context;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -10,8 +15,14 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.OnLifecycleEvent;
 
 
+import com.zhh.androidrosbridgeclient.action.MoveDirection;
+import com.zhh.androidrosbridgeclient.interfaces.OnNavigateListener;
 import com.zhh.androidrosbridgeclient.ros.message.nav_msgs.OccupancyGrid;
+import com.zhh.rosApp.R;
 import com.zhh.rosApp.manger.RosDeviceManager;
+
+import java.awt.font.TextAttribute;
+import java.io.FileInputStream;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -22,7 +33,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class MainViewModel extends AndroidViewModel implements LifecycleObserver {
 
-    private final String uriString = "ws://192.168.0.200:9090";
+    private String uriString = "ws://192.168.0.200:9090";
     public MutableLiveData<OccupancyGrid> obOccupancyGrid = new MutableLiveData<>();
 
 
@@ -30,6 +41,7 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
         return obOccupancyGrid;
     }
 
+    public MutableLiveData<String> connectIp = new MutableLiveData<>();
 
     // 底盘连接成功
     private boolean connectSuccess;
@@ -39,15 +51,41 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
     private int connectRosFailedTimes = 0;
     private boolean live = true;
 
+    private Context context;
+
     public MainViewModel(@NonNull Application application) {
         super(application);
-
+        context = application.getBaseContext();
     }
 
 
     @OnLifecycleEvent(value = Lifecycle.Event.ON_CREATE)
     public void onCreate() {
         connectROS();
+    }
+
+    public void onClick(View view) {
+        if (R.id.bt_m_connect == view.getId()) {
+            if (TextUtils.isEmpty(connectIp.getValue())) {
+                showToast("请填写ip地址");
+                return;
+            }
+            uriString = "ws://" + connectIp.getValue();
+            connectROS();
+        }
+
+        if (!connectSuccess) {
+            return;
+        }
+        if (R.id.bt_m_left == view.getId()) {
+            RosDeviceManager.INSTANCE.moveBy(MoveDirection.TURN_LEFT, onNavigateListener);
+        } else if (R.id.bt_m_right == view.getId()) {
+            RosDeviceManager.INSTANCE.moveBy(MoveDirection.TURN_RIGHT, onNavigateListener);
+        } else if (R.id.bt_m_forward == view.getId()) {
+            RosDeviceManager.INSTANCE.moveBy(MoveDirection.FORWARD, onNavigateListener);
+        } else if (R.id.bt_m_backward == view.getId()) {
+            RosDeviceManager.INSTANCE.moveBy(MoveDirection.BACKWARD, onNavigateListener);
+        }
     }
 
     /**
@@ -102,6 +140,7 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
 
     private void connectRosSuccess() {
         connectSuccess = true;
+        //直接new 了一个线程，开发中不建议这么写
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -129,4 +168,39 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
     }
 
 
+    private void showToast(CharSequence charSequence) {
+        Toast.makeText(context, charSequence, Toast.LENGTH_SHORT).show();
+    }
+
+    OnNavigateListener onNavigateListener = new OnNavigateListener() {
+        @Override
+        public void waitingForStart() {
+
+        }
+
+        @Override
+        public void running() {
+
+        }
+
+        @Override
+        public void finished() {
+
+        }
+
+        @Override
+        public void paused() {
+
+        }
+
+        @Override
+        public void stopped() {
+
+        }
+
+        @Override
+        public void error() {
+
+        }
+    };
 }

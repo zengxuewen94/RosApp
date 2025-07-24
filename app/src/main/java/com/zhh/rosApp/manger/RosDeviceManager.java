@@ -5,6 +5,8 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.zhh.androidrosbridgeclient.RosBridgeClientManager;
+import com.zhh.androidrosbridgeclient.action.MoveDirection;
+import com.zhh.androidrosbridgeclient.interfaces.OnNavigateListener;
 import com.zhh.androidrosbridgeclient.ros.ROSClient;
 import com.zhh.androidrosbridgeclient.ros.message.geometry_msgs.Pose;
 import com.zhh.androidrosbridgeclient.ros.message.geometry_msgs.PoseStamped;
@@ -46,6 +48,20 @@ public enum RosDeviceManager {
         return false;
     }
 
+
+    /**
+     * 上下左右移动
+     * @param moveDirection
+     * @param onNavigateListener
+     */
+    public synchronized void moveBy(MoveDirection moveDirection, OnNavigateListener onNavigateListener){
+        manager.moveBy(moveDirection,onNavigateListener);
+    }
+
+
+    public synchronized void moveBy(MoveDirection moveDirection){
+        manager.moveBy(moveDirection,null);
+    }
 
     /**
      * @return 机器所在地图位姿信息

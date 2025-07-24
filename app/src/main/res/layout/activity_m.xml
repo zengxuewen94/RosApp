@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -8,7 +9,7 @@
             type="com.zhh.rosApp.viewmodel.MainViewModel" />
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -16,5 +17,99 @@
             android:id="@+id/iv_map"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <EditText
+                android:id="@+id/et_m_ip"
+                android:layout_width="wrap_content"
+                android:minWidth="180dp"
+                android:layout_height="45dp"
+                android:textSize="14sp"
+                android:hint="填写ip地址"
+                android:text="@{viewModel.connectIp}"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/tv_m_ip_example"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" 如：192.168.0.200:9090"
+                android:textSize="14sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/et_m_ip" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/bt_m_connect"
+                android:layout_width="80dp"
+                android:layout_height="45dp"
+                android:onClick="@{(v)->viewModel.onClick(v)}"
+                android:text="连接"
+                app:layout_constraintLeft_toRightOf="@id/et_m_ip"
+                app:layout_constraintTop_toTopOf="@id/et_m_ip" />
+
+            <TextView
+                android:id="@+id/tv_m_connect_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="连接状态："
+                android:textSize="14sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_m_ip_example" />
+
+            <TextView
+                android:id="@+id/tv_m_connect_state_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="未连接"
+                android:layout_marginTop="20dp"
+                android:textSize="14sp"
+                app:layout_constraintLeft_toRightOf="@id/tv_m_connect_state"
+                app:layout_constraintTop_toBottomOf="@id/tv_m_ip_example"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/bt_m_left"
+                android:layout_width="80dp"
+                android:layout_height="45dp"
+                android:onClick="@{(v)->viewModel.onClick(v)}"
+                android:text="左"
+                app:layout_constraintRight_toLeftOf="@id/bt_m_forward"
+                app:layout_constraintTop_toBottomOf="@id/bt_m_forward" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/bt_m_right"
+                android:layout_width="80dp"
+                android:layout_height="45dp"
+                android:onClick="@{(v)->viewModel.onClick(v)}"
+                android:text="右"
+                app:layout_constraintLeft_toRightOf="@id/bt_m_forward"
+                app:layout_constraintTop_toBottomOf="@id/bt_m_forward" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/bt_m_forward"
+                android:layout_width="80dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="20dp"
+                android:onClick="@{(v)->viewModel.onClick(v)}"
+                android:text="前"
+                app:layout_constraintLeft_toRightOf="@id/bt_m_left"
+                app:layout_constraintRight_toLeftOf="@id/bt_m_right"
+                app:layout_constraintTop_toBottomOf="@id/tv_m_connect_state" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/bt_m_backward"
+                android:layout_width="80dp"
+                android:layout_height="45dp"
+                android:onClick="@{(v)->viewModel.onClick(v)}"
+                android:text="后"
+                app:layout_constraintLeft_toRightOf="@id/bt_m_left"
+                app:layout_constraintRight_toLeftOf="@id/bt_m_right"
+                app:layout_constraintTop_toBottomOf="@id/bt_m_left" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

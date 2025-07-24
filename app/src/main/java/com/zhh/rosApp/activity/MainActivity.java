@@ -46,6 +46,8 @@ public class MainActivity extends ComponentActivity {
 
 
     private void observeViewModel(MainViewModel mainViewModel) {
+
+
         mainViewModel.getObOccupancyGrid().observe(this, new Observer<OccupancyGrid>() {
             @Override
             public void onChanged(OccupancyGrid occupancyGrid) {
